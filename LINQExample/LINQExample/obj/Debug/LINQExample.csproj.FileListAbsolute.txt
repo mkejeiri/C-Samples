@@ -1,0 +1,5 @@
+C:\PGM\Executables\C# Samples\LINQExample\LINQExample\bin\Debug\LINQExample.exe.config
+C:\PGM\Executables\C# Samples\LINQExample\LINQExample\bin\Debug\LINQExample.exe
+C:\PGM\Executables\C# Samples\LINQExample\LINQExample\bin\Debug\LINQExample.pdb
+C:\PGM\Executables\C# Samples\LINQExample\LINQExample\obj\Debug\LINQExample.exe
+C:\PGM\Executables\C# Samples\LINQExample\LINQExample\obj\Debug\LINQExample.pdb

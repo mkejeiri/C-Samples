@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\bin\Debug\DelegatesExample.exe.config
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\bin\Debug\DelegatesExample.exe
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\bin\Debug\DelegatesExample.pdb
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\obj\Debug\DelegatesExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\obj\Debug\DelegatesExample.exe
+C:\PGM\Executables\C# Samples\DelegatesExample\DelegatesExample\obj\Debug\DelegatesExample.pdb

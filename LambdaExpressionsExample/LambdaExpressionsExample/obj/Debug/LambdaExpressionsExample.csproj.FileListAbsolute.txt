@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\bin\Debug\LambdaExpressionsExample.exe.config
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\bin\Debug\LambdaExpressionsExample.exe
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\bin\Debug\LambdaExpressionsExample.pdb
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\obj\Debug\LambdaExpressionsExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\obj\Debug\LambdaExpressionsExample.exe
+C:\PGM\Executables\C# Samples\LambdaExpressionsExample\LambdaExpressionsExample\obj\Debug\LambdaExpressionsExample.pdb

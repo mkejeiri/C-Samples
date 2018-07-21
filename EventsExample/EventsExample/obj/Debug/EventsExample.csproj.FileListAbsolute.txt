@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\bin\Debug\EventsExample.exe.config
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\bin\Debug\EventsExample.exe
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\bin\Debug\EventsExample.pdb
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\obj\Debug\EventsExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\obj\Debug\EventsExample.exe
+C:\PGM\Executables\C# Samples\EventsExample\EventsExample\obj\Debug\EventsExample.pdb

@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\bin\Debug\ReflexionExample.exe.config
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\bin\Debug\ReflexionExample.exe
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\bin\Debug\ReflexionExample.pdb
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\obj\Debug\ReflexionExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\obj\Debug\ReflexionExample.exe
+C:\PGM\Executables\C# Samples\ReflexionExample\ReflexionExample\obj\Debug\ReflexionExample.pdb

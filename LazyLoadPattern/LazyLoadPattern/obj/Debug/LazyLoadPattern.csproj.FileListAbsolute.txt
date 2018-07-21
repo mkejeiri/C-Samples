@@ -1,0 +1,5 @@
+C:\PGM\Executables\C# Samples\LazyLoadPattern\LazyLoadPattern\bin\Debug\LazyLoadPattern.exe.config
+C:\PGM\Executables\C# Samples\LazyLoadPattern\LazyLoadPattern\bin\Debug\LazyLoadPattern.exe
+C:\PGM\Executables\C# Samples\LazyLoadPattern\LazyLoadPattern\bin\Debug\LazyLoadPattern.pdb
+C:\PGM\Executables\C# Samples\LazyLoadPattern\LazyLoadPattern\obj\Debug\LazyLoadPattern.exe
+C:\PGM\Executables\C# Samples\LazyLoadPattern\LazyLoadPattern\obj\Debug\LazyLoadPattern.pdb

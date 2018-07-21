@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\bin\Debug\TaskParallelLibraryOldWay.exe.config
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\bin\Debug\TaskParallelLibraryOldWay.exe
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\bin\Debug\TaskParallelLibraryOldWay.pdb
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\obj\Debug\TaskParallelLibraryOldWay.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\obj\Debug\TaskParallelLibraryOldWay.exe
+C:\PGM\Executables\C# Samples\TaskParallelLibraryOldWay\TaskParallelLibraryOldWay\obj\Debug\TaskParallelLibraryOldWay.pdb

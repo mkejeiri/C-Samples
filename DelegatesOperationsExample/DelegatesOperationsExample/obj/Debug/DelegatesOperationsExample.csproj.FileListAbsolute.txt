@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\bin\Debug\DelegatesOperationsExample.exe.config
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\bin\Debug\DelegatesOperationsExample.exe
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\bin\Debug\DelegatesOperationsExample.pdb
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\obj\Debug\DelegatesOperationsExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\obj\Debug\DelegatesOperationsExample.exe
+C:\PGM\Executables\C# Samples\DelegatesOperationsExample\DelegatesOperationsExample\obj\Debug\DelegatesOperationsExample.pdb

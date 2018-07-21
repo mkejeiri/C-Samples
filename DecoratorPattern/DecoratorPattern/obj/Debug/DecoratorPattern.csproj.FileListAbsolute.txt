@@ -1,0 +1,8 @@
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\DecoratorPattern.exe.config
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\DecoratorPattern.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\DecoratorPattern.pdb
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\obj\Debug\DecoratorPattern.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\obj\Debug\DecoratorPattern.pdb
+C:\PGM\Executables\C# Samples\DecoratorPattern\DecoratorPattern\bin\Debug\DecoratorPattern.exe.config
+C:\PGM\Executables\C# Samples\DecoratorPattern\DecoratorPattern\obj\Debug\DecoratorPattern.exe
+C:\PGM\Executables\C# Samples\DecoratorPattern\DecoratorPattern\obj\Debug\DecoratorPattern.pdb

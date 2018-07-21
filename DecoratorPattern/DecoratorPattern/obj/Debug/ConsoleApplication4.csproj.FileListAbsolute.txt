@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\ConsoleApplication4.exe.config
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\obj\Debug\ConsoleApplication4.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\ConsoleApplication4.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\bin\Debug\ConsoleApplication4.pdb
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\obj\Debug\ConsoleApplication4.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication4\ConsoleApplication4\obj\Debug\ConsoleApplication4.pdb

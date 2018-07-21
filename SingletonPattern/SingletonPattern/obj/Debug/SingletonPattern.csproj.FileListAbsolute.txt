@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\ConsoleApplication3\ConsoleApplication3\bin\Debug\SingletonPattern.exe.config
+C:\PGM\Executables\C# Samples\SingletonPattern\SingletonPattern\bin\Debug\SingletonPattern.exe.config
+C:\PGM\Executables\C# Samples\SingletonPattern\SingletonPattern\bin\Debug\SingletonPattern.exe
+C:\PGM\Executables\C# Samples\SingletonPattern\SingletonPattern\bin\Debug\SingletonPattern.pdb
+C:\PGM\Executables\C# Samples\SingletonPattern\SingletonPattern\obj\Debug\SingletonPattern.exe
+C:\PGM\Executables\C# Samples\SingletonPattern\SingletonPattern\obj\Debug\SingletonPattern.pdb

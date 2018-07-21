@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\bin\Debug\ShadowVsOverride.exe.config
+C:\PGM\Executables\C# Samples\ShadowVsOverride\ShadowVsOverride\bin\Debug\ShadowVsOverride.exe.config
+C:\PGM\Executables\C# Samples\ShadowVsOverride\ShadowVsOverride\bin\Debug\ShadowVsOverride.exe
+C:\PGM\Executables\C# Samples\ShadowVsOverride\ShadowVsOverride\bin\Debug\ShadowVsOverride.pdb
+C:\PGM\Executables\C# Samples\ShadowVsOverride\ShadowVsOverride\obj\Debug\ShadowVsOverride.exe
+C:\PGM\Executables\C# Samples\ShadowVsOverride\ShadowVsOverride\obj\Debug\ShadowVsOverride.pdb

@@ -1,0 +1,6 @@
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe.config
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\bin\Debug\ConsoleApplication2.pdb
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.exe
+C:\PGM\Executables\C# Samples\ConsoleApplication2\ConsoleApplication2\obj\Debug\ConsoleApplication2.pdb

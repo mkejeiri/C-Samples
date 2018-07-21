@@ -1,0 +1,9 @@
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\bin\Debug\AsyncAwaitExample.exe.config
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\bin\Debug\AsyncAwaitExample.exe
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\bin\Debug\AsyncAwaitExample.pdb
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.csprojResolveAssemblyReference.cache
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.AsyncAwaitExampleForm.resources
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.Properties.Resources.resources
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.csproj.GenerateResource.Cache
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.exe
+C:\PGM\Executables\C# Samples\AsyncAwaitExample\AsyncAwaitExample\obj\Debug\AsyncAwaitExample.pdb

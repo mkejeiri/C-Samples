@@ -1,0 +1,5 @@
+C:\PGM\Executables\C# Samples\AttributeClass\AttributeClass\bin\Debug\AttributeClass.exe.config
+C:\PGM\Executables\C# Samples\AttributeClass\AttributeClass\bin\Debug\AttributeClass.exe
+C:\PGM\Executables\C# Samples\AttributeClass\AttributeClass\bin\Debug\AttributeClass.pdb
+C:\PGM\Executables\C# Samples\AttributeClass\AttributeClass\obj\Debug\AttributeClass.exe
+C:\PGM\Executables\C# Samples\AttributeClass\AttributeClass\obj\Debug\AttributeClass.pdb
