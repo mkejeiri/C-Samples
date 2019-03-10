@@ -49,9 +49,12 @@ namespace CovarianceContravariance {
 
         public static void Main (string[] args) {
             /******************************************************************
-            Covariance :preserve assignement compatibility
-            Contravariance: reverses assignement compatibility
-            it deals with 3 types : delegate, array and generics type arguments
+            - Covariance :preserve assignement compatibility between parent and child (IS relation) 
+                          relationship during dynamic polymorphism
+                          example : Animal a = new Dog(); 
+                          and also group of animals -> IEnumerable<Animal> an = new List<Dog>(); //wasn't possible before 4.0
+            - Contravariance: reverses assignement compatibility
+            - it deals with 3 types : delegate, array and generics type arguments
             *******************************************************************/
 
             /* 
