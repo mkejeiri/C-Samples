@@ -7,6 +7,24 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 namespace CovarianceContravariance {
+    
+/******************************************************************************************************************
+=> C O V A R I A N C E : Assignment compatibility is preserved: 
+   An object that is instantiated with a more derived type argument is assigned to an object instantiated 
+   with a less derived type argument.
+            
+Covariance preserve assignement compatibility between parent and child (IS relation) relationship during dynamic polymorphism 
+-> example : Animal a = new Dog(); 
+and also group of animals -> IEnumerable<Animal> an = new List<Dog>(); //wasn't possible before 4.0   
+(use `out` keyword for generics)
+            
+*******************************************************************************************************************/
+            
+ /******************************************************************************************************************
+ => C O N T R A V A R I A N C E : Assignment compatibility is reversed :   
+ An object that is instantiated with a less derived type argument is assigned to an object instantiated with 
+ a more derived type argument (use `in` keyword for generics).              
+ *******************************************************************************************************************/
     public class Animal {
         public void Eat () => System.Console.WriteLine ("Eat");
     }
@@ -51,24 +69,7 @@ namespace CovarianceContravariance {
         public static void Fly (Bird b) => b.Fly ();
 
         public static void Main (string[] args) {
-    /******************************************************************************************************************
-            => C O V A R I A N C E : Assignment compatibility is preserved: 
-            An object that is instantiated with a more derived type argument is assigned to an object instantiated 
-            with a less derived type argument.
-            
-            Covariance preserve assignement compatibility between parent and child (IS relation) relationship during 
-            dynamic polymorphism 
-                          -> example : Animal a = new Dog(); 
-                          and also group of animals -> IEnumerable<Animal> an = new List<Dog>(); //wasn't possible before 4.0
-                          (use `out` keyword for generics)
-            
-    *******************************************************************************************************************/
-            
-     /******************************************************************************************************************
-              => C O N T R A V A R I A N C E : Assignment compatibility is reversed :   
-              An object that is instantiated with a less derived type argument is assigned to an object instantiated with 
-              a more derived type argument (use `in` keyword for generics).              
-    *******************************************************************************************************************/
+    
 
             
             /************************* 
