@@ -1,6 +1,8 @@
-//https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/covariance-contravariance/
-//Anders Hejlsberg: Coavariance allowing you to do things in your code that previously 
-//you where suprised you could not do 
+/******************************************************************************************************************
+Covariance and Contravariance deal with 3 types : delegates, arrays and generics type arguments see example next.
+https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/covariance-contravariance/
+Anders Hejlsberg: Coavariance allowing you to do things in your code that previously you where suprised you could not do 
+******************************************************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -49,19 +51,30 @@ namespace CovarianceContravariance {
         public static void Fly (Bird b) => b.Fly ();
 
         public static void Main (string[] args) {
-            /******************************************************************
-            - Covariance :preserve assignement compatibility between parent and child (IS relation) 
-                          relationship during dynamic polymorphism
-                          example : Animal a = new Dog(); 
+    /******************************************************************************************************************
+            => C O V A R I A N C E : Assignment compatibility is preserved: 
+            An object that is instantiated with a more derived type argument is assigned to an object instantiated 
+            with a less derived type argument.
+            
+            Covariance preserve assignement compatibility between parent and child (IS relation) relationship during 
+            dynamic polymorphism 
+                          -> example : Animal a = new Dog(); 
                           and also group of animals -> IEnumerable<Animal> an = new List<Dog>(); //wasn't possible before 4.0
-            - Contravariance: reverses assignement compatibility
-            - it deals with 3 types : delegate, array and generics type arguments
-            *******************************************************************/
+                          (use `out` keyword for generics)
+            
+    *******************************************************************************************************************/
+            
+     /******************************************************************************************************************
+              => C O N T R A V A R I A N C E : Assignment compatibility is reversed :   
+              An object that is instantiated with a less derived type argument is assigned to an object instantiated with 
+              a more derived type argument (use `in` keyword for generics).              
+    *******************************************************************************************************************/
 
-            /* 
+            
+            /************************* 
                 1- D E L E G A T E S
                 return type is covariant and the parameters are contravariant
-            */
+            *************************/
 
             Animal a = new Bird ();
 
@@ -92,19 +105,19 @@ namespace CovarianceContravariance {
              the delegates are the only construct in C# that supports Covariance & Contravariance  
              *********************************************************************************************/
 
-            /* 
+            /************************* 
                 2- A R R A Y S
                 Array with refrence type are also covariants
-            */
+            *************************/
             //assignment is preserved
             Animal[] animals = new Bird[10];
             animals[0] = new Humain (); //compilers doesn't complain but runtime Exception (ArrayTypeMismatchException)
 
 
-            /* 
+            /*************************
                 3- G E N E R I C S
                  
-            */
+            *************************/
             IProcess<Animal> animalProcessor = new AnimalProcessor<Animal> ();
             IProcess<Bird> birdProcessor = new AnimalProcessor<Bird> ();
 
