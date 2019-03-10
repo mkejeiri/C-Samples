@@ -1,3 +1,5 @@
+//Anders Hejlsberg: Coavariance allowing you to do things in your code that previously 
+//you where suprised you could not do 
 using System;
 using System.Collections.Generic;
 using System.IO;
