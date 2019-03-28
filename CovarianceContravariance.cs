@@ -137,7 +137,7 @@ and also group of animals -> IEnumerable<Animal> an = new List<Dog>(); //wasn't 
             animalZoo.add(new Animal()); 
             
             //we could also a
-            nimalZoo.add(new Bird());
+            animalZoo.add(new Bird());
             
             IZoo<Bird> birdZoo = new Zoo<Bird>();
             birdZoo.add(new Bird());
