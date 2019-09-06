@@ -27,6 +27,12 @@ namespace SingletonPattern
 
         public static DBManager getInstance(){
             Console.WriteLine("getting an instance of DBManager...");
+            
+            //return available instance if any : avoid unnecessary locking 
+            if (connect != null)
+            {
+                return connect;
+            }
 
             //Multithreading context locking access to this block!
             lock(syncLock){
