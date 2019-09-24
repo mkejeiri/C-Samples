@@ -87,6 +87,9 @@ public class HomeController : ControllerBase
 /*
 “In Process Messaging” is “implementation” of the mediator pattern where “mediator” class passes data back and forth  
 - It’s an object that encapsulates how objects interact. It can obviously handle passing on “messages” between objects.
-- It promotes loose coupling by not having objects refer to each other, but instead to the mediator. So they pass the messages to the mediator, who will pass it on to the right person.
+
+- It promotes loose coupling by not having objects refer to each other, but instead to the mediator. 
+  So they pass the messages to the mediator, who will pass it on to the right person.
+  
 - The caller doesn’t need to know how things are being handled (By whom and by how many handlers)
 */
