@@ -16,17 +16,24 @@ namespace ExpressionTree
             //Create an expression :  (Name == gary) AndAlso (HireDate > #2016/01/01#)
             foreach (var rule in rules)
             {
+                //e.g. Name or HireDate
                 var prop = Expression.Property(parameter, rule.PropertyName);
+                //e.g. gary or #2016/01/01#
                 var value = Expression.Constant(rule.Value);
+                //(Name == gary) or  (HireDate > #2016/01/01#)
+                //rule.Operation : '=' or '>'
                 var newBinary = Expression.MakeBinary(rule.Operation, left: prop, right: value);
 
                 binaryExpression =
                     binaryExpression == null
-                        ? newBinary
+                        //(Name == gary) or  (HireDate > #2016/01/01#)
+                        ? newBinary 
+                        // add (Name == gary) to (HireDate > #2016/01/01#) or  (HireDate > #2016/01/01#) to (Name == gary) 
                         : Expression.MakeBinary(ExpressionType.AndAlso, left: binaryExpression, right: newBinary);
             }
 
             //Compile the expression and cache it
+            // (Name == gary) AndAlso (HireDate > #2016/01/01#)
             var cookedExpression = Expression.Lambda<Func<T, bool>>(binaryExpression, parameter).Compile();
 
             //Apply the expression (Name == gary) AndAlso (HireDate > #2016/01/01#)
@@ -38,16 +45,16 @@ namespace ExpressionTree
             //Name = "Employee" FullName = "Employee"}
             var elementType = typeof(T);
             var orderByMethodName = ascending ? "OrderBy" : "OrderByDescending";
-            
+
             //Param_0
             var parameterExpression = Expression.Parameter(elementType);
-            
+
             //Param_0.Name
             var propertyOrFieldExpression = Expression.PropertyOrField(parameterExpression, propertyOrFieldName);
-            
+
             ////Param_0 => Param_0.Name
             var selector = Expression.Lambda(propertyOrFieldExpression, parameterExpression);
-            
+
             //Employee[].OrderBy(Param_0 => Param_0.Name)
             var orderByExpression = Expression.Call(
                 type: typeof(Queryable),
@@ -151,7 +158,7 @@ namespace ExpressionTree
             ChangeAndAlsoToOrElse();
             RulesEngineImplementation.Run();
             BuildDynamicQueries();
-           
+
         }
 
 
@@ -178,23 +185,37 @@ namespace ExpressionTree
 
             // ***** Where(company => (company.ToLower() == "coho winery" || company.Length > 16)) *****  
             // Create an expression tree that represents the expression 'company.ToLower() == "coho winery"'.  
+            //company.ToLower()
             Expression companyToLower = Expression.Call(companyParam, typeof(string).GetMethod(name: "ToLower", System.Type.EmptyTypes));
+            
+            //"coho winery"}
             Expression companyConstant = Expression.Constant("coho winery");
+            
+            //(company.ToLower() == "coho winery")
             Expression companyToLowerEqualConstantCompanyName = Expression.Equal(left: companyToLower, right: companyConstant);
 
             // Create an expression tree that represents the expression 'company.Length > 16'.  
+            //company.Length
             Expression companyLength = Expression.Property(companyParam, typeof(string).GetProperty(name: "Length"));
+            
+            //16
             Expression constantLength = Expression.Constant(value: 16, typeof(int));
+            
+            //(company.Length > 16)
             Expression companyLengthGreaterThanConstantLength = Expression.GreaterThan(left: companyLength, right: constantLength);
 
             // Combine the expression trees to create an expression tree that represents the  
             // expression '(company.ToLower() == "coho winery" || company.Length > 16)'. 
             //predicateBody = conditions
+            //((company.ToLower() == "coho winery") OrElse (company.Length > 16))
             Expression conditions = Expression.OrElse(left: companyToLowerEqualConstantCompanyName, right: companyLengthGreaterThanConstantLength);
 
             // Create an expression tree that represents the expression  
             // 'queryableData.Where(company => (company.ToLower() == "coho winery" || company.Length > 16))'  
+            //company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16))
             var wherePredicate = Expression.Lambda<Func<string, bool>>(conditions, parameters: new ParameterExpression[] { companyParam });
+            
+            //System.String[].Where(company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16)))
             MethodCallExpression whereCallExpression = Expression.Call(
                type: typeof(Queryable),
                 methodName: "Where",
@@ -204,8 +225,12 @@ namespace ExpressionTree
 
             // ***** OrderBy(company => company) *****  
             // Create an expression tree that represents the expression  
-            // 'whereCallExpression.OrderBy(company => company)'  
+            // 'whereCallExpression.OrderBy(company => company)'
+            
+            //company => company
             var orderByPredicate = Expression.Lambda<Func<string, string>>(companyParam, new ParameterExpression[] { companyParam });
+
+            //System.String[].Where(company => ((company.ToLower() == "coho winery") OrElse(company.Length > 16))).OrderBy(company => company)
             MethodCallExpression orderByCallExpression = Expression.Call(
                 typeof(Queryable),
                 methodName: "OrderBy",
@@ -213,7 +238,8 @@ namespace ExpressionTree
                 /*params arguments:*/ whereCallExpression, orderByPredicate);
             // ***** End OrderBy *****  
 
-            // Create an executable query from the expression tree.  
+            // Create an executable query from the expression tree.
+            //System.String[].Where(company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16))).OrderBy(company => company)
             IQueryable<string> results = queryableData.Provider.CreateQuery<string>(orderByCallExpression);
 
             // Enumerate the results.  
@@ -374,6 +400,3 @@ namespace ExpressionTree
         }
     }
 }
-
-
-
