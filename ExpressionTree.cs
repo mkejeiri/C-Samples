@@ -35,13 +35,20 @@ namespace ExpressionTree
 
         public static IQueryable<T> OrderByPropertyOrField<T>(this IQueryable<T> queryable, string propertyOrFieldName, bool ascending = true)
         {
+            //Name = "Employee" FullName = "Employee"}
             var elementType = typeof(T);
             var orderByMethodName = ascending ? "OrderBy" : "OrderByDescending";
-
+            
+            //Param_0
             var parameterExpression = Expression.Parameter(elementType);
+            
+            //Param_0.Name
             var propertyOrFieldExpression = Expression.PropertyOrField(parameterExpression, propertyOrFieldName);
+            
+            ////Param_0 => Param_0.Name
             var selector = Expression.Lambda(propertyOrFieldExpression, parameterExpression);
-
+            
+            //Employee[].OrderBy(Param_0 => Param_0.Name)
             var orderByExpression = Expression.Call(
                 type: typeof(Queryable),
                 methodName: orderByMethodName,
