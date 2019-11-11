@@ -1,4 +1,18 @@
 //https://dotnetfiddle.net/C55ERn
+/********************************************************************************************************************
+       Expression vs reflexion
+       Expression are a nice abstraction over reflexion, reflexion is powerful tool emit the IL to run and create methods, 
+       reflexion are slow in comparison to Expression, Expression speeds that up, uses reflexion to cache a delegate, 
+       compile it and then save it into memory and then reuse it, expression are virtually as fast as methods 
+       that we declare inline. Expression captures a lot of what reflexion can do. 
+
+           Shortfall:
+           - sugar syntax using '+' operator on string, this would works in lambda 
+           because c# call 'Concat' under the hood but since is not ExpressionType.Add and we will get an exception
+
+           - Conversion has to be explicitly handled : if an expression expect an object and we passed an employee 
+           if will throw an exception while in lambda this could work because c# magically does the conversion.
+ ********************************************************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +22,7 @@ namespace ExpressionTree
 {
     public static class EnumerableExtensions
     {
+        //We get a series of the rules to be translated into binary expressions
         public static IEnumerable<T> WhereRules<T>(this IEnumerable<T> source, IEnumerable<RulesEngineImplementation.Rule> rules)
         {
             //T = "Employee" FullName = "Employee"
@@ -17,6 +32,12 @@ namespace ExpressionTree
 
             //we got Employee thanks to "name: typeof(T).Name" instead default Param_0 which is applied on Employee object
             var parameter = Expression.Parameter(typeof(T), name: typeof(T).Name);
+
+            //BinaryExpression represents an operation with a left side, right side and an operator
+            //BinaryExpression:
+            //Left : expression
+            //Right : expression
+            //NodeType (The thing in the middle!) : Equal, NotEqual, etc...
             BinaryExpression binaryExpression = null;
 
             //Create an expression :  (Name == gary) AndAlso (HireDate > #2016/01/01#)
@@ -61,7 +82,7 @@ namespace ExpressionTree
         {
             //T = "Employee" FullName = "Employee"
             var elementType = typeof(T);
-            var orderByMethodName = ascending ? "OrderBy" : "OrderByDescending";
+            string orderByMethodName = ascending ? "OrderBy" : "OrderByDescending";
 
             //Param_0 is applied on Employee object
             //with the next parameter we will get default Param_0
@@ -74,13 +95,18 @@ namespace ExpressionTree
             var propertyOrFieldExpression = Expression.PropertyOrField(parameterExpression, propertyOrFieldName);
 
             //Param_0 => Param_0.Name or Employee => Employee.Name
+            var lambda = Expression.Lambda(propertyOrFieldExpression, parameterExpression);
             var selector = Expression.Lambda(propertyOrFieldExpression, parameterExpression);
 
             //Employee[].OrderBy(Param_0 => Param_0.Name) OR Employee[].OrderBy(Employee => Employee.Name)
             var orderByExpression = Expression.Call(
+                //the type whose function we want to call
                 type: typeof(Queryable),
+                //The name of the method (string)
                 methodName: orderByMethodName,
+                //The generic type signature {Employee, String}
                 typeArguments: new[] { elementType, propertyOrFieldExpression.Type },
+                //Parameters : queryableData.Expression = {ExpressionTree.RulesEngineImplementation+Employee[]}, selector= {Employee => Employee.Name}
                 /*params arguments:*/queryableData.Expression, selector);
 
             //Create an executable query from the expression tree.
@@ -88,7 +114,8 @@ namespace ExpressionTree
         }
     }
 
-    //This two rule will filter over the list (Name == gary) AndAlso (HireDate > #2016/01/01#)
+    //This two rule will filter engine over the list (Name == gary) AndAlso (HireDate > #2016/01/01#)
+    //OR search filtering system over 'Name' and 'HireDate'
     public static class RulesEngineImplementation
     {
         public class Rule
@@ -130,6 +157,7 @@ namespace ExpressionTree
             };
 
             //This two rule will filter over the list (Name == gary) AndAlso (HireDate > #2016/01/01#)
+            //We get a series of the rules to be translated into binary expressions
             var Rules = new List<Rule> {
                 new Rule {
                     PropertyName = "Name",
@@ -175,15 +203,88 @@ namespace ExpressionTree
 
         static void Main(string[] args)
         {
-            //SimpleExpressions();
+            SimpleExpressions();
             ExpressionOnString();
-            //Factorial();
-            //ChangeAndAlsoToOrElse();
-            //RulesEngineImplementation.Run();
-            //BuildDynamicQueries();
+            Factorial();
+            ChangeAndAlsoToOrElse();
+            RulesEngineImplementation.Run();
+            BuildDynamicQueries();
+            ExceptionsWhenSugarSyntax();
 
         }
 
+        //Exception : The binary operator Add is not defined for the types 'System.String' and 'System.String'.
+        // str + str is not as add operator it's a concatenate under the cover!!!
+        // solution with concat function at 'finally'
+        /********************************************************************************************************************
+        Expression vs reflexion
+        Expression are a nice abstraction over reflexion, reflexion is powerful tool emit the IL to run and create methods, 
+        reflexion are slow in comparison to Expression, Expression speeds that up, uses reflexion to cache a delegate, 
+        compile it and then save it into memory and then reuse it, expression are virtually as fast as methods 
+        that we declare inline. Expression captures a lot of what reflexion can do. 
+
+            Shortfall:
+            - sugar syntax using '+' operator on string, this would works in lambda 
+            because c# call 'Concat' under the hood but since is not ExpressionType.Add and we will get an exception
+
+            - Conversion has to be explicitly handled : if an expression expect an object and we passed an employee 
+            if will throw an exception while in lambda this could work because c# magically does the conversion.
+         ********************************************************************************************************************/
+        private static void ExceptionsWhenSugarSyntax()
+        {
+            try
+            {
+                Func<string, string, string> combinedStrings = (str1, str2) =>
+                    //this uses string.Concat under the cover!!!
+                    str1 + str2;
+
+                Expression<Func<string, string, string>> combinedStringsExp = (str1, str2) => str1 + str2;
+                var str1Param = Expression.Parameter(typeof(string));
+                var str2Param = Expression.Parameter(typeof(string));
+                var combineThem = Expression.MakeBinary(ExpressionType.Add, left: str1Param, right: str2Param);
+
+                var lambda = Expression.Lambda<Func<string, string, string>>(combineThem, str1Param, str2Param);
+
+                Console.WriteLine(lambda.Compile().Invoke("Test1", "Test2"));
+            }
+            catch (InvalidOperationException e)
+            {
+                //output: The binary operator Add is not defined for the types 'System.String' and 'System.String'.
+                Console.WriteLine(e.Message);
+                //throw e;
+            }
+            
+            //Solution
+            finally
+            {
+                // Create the parameter expressions
+                var strA = Expression.Parameter(typeof(string), name: "First");
+                var strB = Expression.Parameter(typeof(string), name: "Second");
+
+                //{System.String Concat(System.String, System.String)}
+                var methodInfo = typeof(string).GetMethod(name: nameof(String.Concat), types:new[] { typeof(string), typeof(string) });
+
+                //{Concat(First, Second)}
+                var concatenate = Expression.Call(methodInfo, arg0:strA, arg1:strB);
+
+                //(First, Second) => Concat(First, Second)
+                var LambdaExpr = Expression.Lambda<Func<string, string, string>>(concatenate, strA, strB);
+                //output:Test1Test2
+                //Console.WriteLine(LambdaExpr.Compile().Invoke("Test1", "Test2"));
+
+
+                //System.Func`3[System.String, System.String, System.String]
+                var lambda = LambdaExpr.Compile();
+
+                //output:Test1Test2
+                Console.WriteLine(lambda.Invoke("Test1", "Test2"));
+                
+            }
+        }
+
+        //ExpressionVisitor read each piece of the expression and operates on it on the different way,
+        //its goal here is to translate a parameter to upper case e.g. "s => (s + " belongs to john").ToUpper()"
+        //ExpressionVisitor used to read and operate on expressions ... or even modify them... kind of
         public class ToUpperVisitor : ExpressionVisitor
         {
             public override Expression Visit(Expression node)
@@ -193,14 +294,14 @@ namespace ExpressionTree
                 {
                     return base.Visit(node);
                 }
-
+                //node = s + " belongs to john"
                 if (node.Type == typeof(string))
                 {
-                    var toUpper = typeof(string).GetMethod("ToUpper", Type.EmptyTypes);
+                    //System.String ToUpper()
+                    var toUpper = typeof(string).GetMethod(name: nameof(String.ToUpper), Type.EmptyTypes);
+
+                    //s => (s + " belongs to john").ToUpper()
                     var methodCallExpression = Expression.Call(node, toUpper);
-                    //var stronglyTypedSelector = Expression.Lambda<Func<string,string>>(methodCallExpression,node);
-                    //var outputStronglyTyped= stronglyTypedSelector.Compile().Invoke("john"); 
-                    //Console.WriteLine(outputStronglyTyped);
                     return methodCallExpression;
                 }
                 return base.Visit(node);
@@ -208,7 +309,7 @@ namespace ExpressionTree
         }
         private static void ExpressionOnString()
         {
-            
+
             //default Param_0 as parameters name
             //var prm = Expression.Parameter(typeof(string));
 
@@ -266,16 +367,16 @@ namespace ExpressionTree
             //This operates an expression (description of what a function does), can be interpreted by a library at runtime 
             //IQueryable<T>.Where<T>(Expression<Func<T,Boolean>> predicate)
 
-            //This IQueryable : the result not triggered against the DB, interpreted by a library at runtime 
+            //This IQueryable : the result not triggered against the DB, **interpreted by a library at runtime**
             //var products = db.Products
             //	.Where(p=> p.Name == "eggs") //<- BinaryExpression
             //	.OrderByDescending(p=>p.Price);
 
-
+            //BinaryExpression represents an operation with a left side, right side and an operator
             //BinaryExpression:
             //Left : expression
             //Right : expression
-            //NodeType : Equal, NotEqual, etc...
+            //NodeType (The thing in the middle!) : Equal, NotEqual, etc...
 
             //ExpressionVisitor read each piece of the expression and operates on it on the different way, its goal is to translate this linked query into SQL
             //ExpressionVisitor used to read and operate on expressions ... or even modify them... kind of
@@ -433,11 +534,15 @@ namespace ExpressionTree
             Console.WriteLine(expr);
 
             AndAlsoModifier treeModifier = new AndAlsoModifier();
-            Expression modifiedExpr = treeModifier.Modify((Expression)expr);
+
             //output:name => ((name.Length > 10) || name.StartsWith("G"))  
+            Expression modifiedExpr = treeModifier.Modify((Expression)expr);
             Console.WriteLine(modifiedExpr);
         }
 
+
+        //ExpressionVisitor read each piece of the expression and operates on it on the different way,
+        //its goal here is to modify an AndAlso (&&) to OrElse (||)
         public class AndAlsoModifier : ExpressionVisitor
         {
             public Expression Modify(Expression expression)
@@ -451,14 +556,23 @@ namespace ExpressionTree
             //protected override Expression VisitBinary([NotNull] BinaryExpression node)
             protected override Expression VisitBinary(BinaryExpression node)
             {
+                //BinaryExpression represents an operation with a left side, right side and an operator
+                //BinaryExpression:
+                //Left : expression
+                //Right : expression
+                //NodeType (The thing in the middle!) : Equal, NotEqual, etc...
+                //node = ((name.Length > 10) AndAlso name.StartsWith("G"))
+                //node.NodeType = AndAlso
                 if (node.NodeType == ExpressionType.AndAlso)
                 {
                     // node: name => ((name.Length > 10) && name.StartsWith("G"))
                     Expression left = this.Visit(node.Left);
                     Expression right = this.Visit(node.Right);
 
-                    // Make this binary expression an OrElse operation instead of an AndAlso operation.  
-                    return Expression.MakeBinary(binaryType: ExpressionType.OrElse, left: left, right: right, liftToNull: node.IsLiftedToNull, method: node.Method);
+                    //Make this binary expression an OrElse operation instead of an AndAlso operation.  
+                    //visitorExpr = ((name.Length > 10) OrElse name.StartsWith("G"))
+                    var visitorExpr = Expression.MakeBinary(binaryType: ExpressionType.OrElse, left: left, right: right, liftToNull: node.IsLiftedToNull, method: node.Method);
+                    return visitorExpr;
                 }
 
                 return base.VisitBinary(node);
@@ -529,6 +643,7 @@ namespace ExpressionTree
             //output: addTwoNumbersExpressionCompiled(1,2) = 3
             Console.WriteLine($"addTwoNumbersExpressionCompiled(1,2) = {addTwoNumbersExpressionCompiled(1, 2)}");
 
+            //BinaryExpression represents an operation with a left side, right side and an operator
             BinaryExpression body = (BinaryExpression)addTwoNumbersExpression.Body;
             //output: (x + y)
             Console.WriteLine(body);
@@ -546,6 +661,7 @@ namespace ExpressionTree
             //Output : 5
             Console.WriteLine(five);
 
+            //BinaryExpression represents an operation with a left side, right side and an operator
             BinaryExpression numLessThanFive = Expression.LessThan(left: numberParameter, right: five);
             //Output : (Number < 5)
             Console.WriteLine(numLessThanFive);
@@ -577,6 +693,8 @@ namespace ExpressionTree
 
             // Decompose the expression tree.  
             ParameterExpression param = (ParameterExpression)exprTree.Parameters[0];
+
+            //BinaryExpression represents an operation with a left side, right side and an operator
             BinaryExpression operation = (BinaryExpression)exprTree.Body;
             ParameterExpression left = (ParameterExpression)operation.Left;
             ConstantExpression right = (ConstantExpression)operation.Right;
@@ -586,6 +704,4 @@ namespace ExpressionTree
                 param.Name, left.Name, operation.NodeType, right.Value);
         }
     }
-
-
 }
