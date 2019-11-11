@@ -175,10 +175,10 @@ namespace ExpressionTree
 
         static void Main(string[] args)
         {
-            //SimpleExpressions();
-            //Factorial();
-            //ChangeAndAlsoToOrElse();
-            //RulesEngineImplementation.Run();
+            SimpleExpressions();
+            Factorial();
+            ChangeAndAlsoToOrElse();
+            RulesEngineImplementation.Run();
             BuildDynamicQueries();
 
         }
@@ -364,9 +364,25 @@ namespace ExpressionTree
 
         private static void SimpleExpressions()
         {
+
+            //1- function declaration
+            //Homoiconicity : the syntax that we use to declare a method can be used to describe a method
+            Func<int, int, int> addTwoNumbersLambda = (x, y) => x + y;
+
+            //output: System.Func`3[System.Int32,System.Int32,System.Int32]
+            Console.WriteLine(addTwoNumbersLambda);
+
+            //output: addTwoNumbersLambda(1,2) = 3
+            Console.WriteLine($"addTwoNumbersLambda(1,2) = {addTwoNumbersLambda(1, 2)}");
+
+            //2- function description
+            //Homoiconicity : the syntax that we use to declare a method can be used to describe a method
             Expression<Func<int, int, int>> addTwoNumbersExpression = (x, y) => x + y;
             //output: (x, y) => (x + y)
             Console.WriteLine(addTwoNumbersExpression);
+            var addTwoNumbersExpressionCompiled = addTwoNumbersExpression.Compile();
+            //output: addTwoNumbersExpressionCompiled(1,2) = 3
+            Console.WriteLine($"addTwoNumbersExpressionCompiled(1,2) = {addTwoNumbersExpressionCompiled(1, 2)}");
 
             BinaryExpression body = (BinaryExpression)addTwoNumbersExpression.Body;
             //output: (x + y)
@@ -390,12 +406,12 @@ namespace ExpressionTree
             Console.WriteLine(numLessThanFive);
 
             Expression<Func<int, bool>> lambda1 = Expression.Lambda<Func<int, bool>>(numLessThanFive, parameters: new ParameterExpression[] { numberParameter });
-            //False
+            //output: False
             //Console.WriteLine(lambda1.Compile().DynamicInvoke(6));
             Console.WriteLine(lambda1.Compile()(arg: 6));
 
 
-            //Creating an expression tree.  
+            //Creating an expression tree. 
             Expression<Func<int, bool>> expr = num => num < 5;
 
             // Compiling the expression tree into a delegate.  
