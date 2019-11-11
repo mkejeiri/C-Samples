@@ -175,14 +175,155 @@ namespace ExpressionTree
 
         static void Main(string[] args)
         {
-            SimpleExpressions();
-            Factorial();
-            ChangeAndAlsoToOrElse();
-            RulesEngineImplementation.Run();
-            BuildDynamicQueries();
+            //SimpleExpressions();
+            ExpressionOnString();
+            //Factorial();
+            //ChangeAndAlsoToOrElse();
+            //RulesEngineImplementation.Run();
+            //BuildDynamicQueries();
 
         }
 
+        public class ToUpperVisitor : ExpressionVisitor
+        {
+            public override Expression Visit(Expression node)
+            {
+
+                if (node.NodeType == ExpressionType.Parameter)
+                {
+                    return base.Visit(node);
+                }
+
+                if (node.Type == typeof(string))
+                {
+                    var toUpper = typeof(string).GetMethod("ToUpper", Type.EmptyTypes);
+                    var methodCallExpression = Expression.Call(node, toUpper);
+                    //var stronglyTypedSelector = Expression.Lambda<Func<string,string>>(methodCallExpression,node);
+                    //var outputStronglyTyped= stronglyTypedSelector.Compile().Invoke("john"); 
+                    //Console.WriteLine(outputStronglyTyped);
+                    return methodCallExpression;
+                }
+                return base.Visit(node);
+            }
+        }
+        private static void ExpressionOnString()
+        {
+            
+            //default Param_0 as parameters name
+            //var prm = Expression.Parameter(typeof(string));
+
+            //"String"  as parameters name
+            var prm = Expression.Parameter(typeof(string), name: typeof(string).Name);
+
+            //get the ToUpper method using reflexion
+            //var toUpper = typeof(string).GetMethod(name:"ToUpper", Type.EmptyTypes);
+            var toUpper = typeof(string).GetMethod(name: nameof(string.ToUpper), Type.EmptyTypes);
+
+            //Creates a MethodCallExpression that represents a call to a method that takes no arguments. 
+            //through reflexion we call "toUpper" applied to the instance "prm" (string expression wrapper)
+            var body = Expression.Call(prm, toUpper);
+
+            //We create a lambda based on the body and the param 
+            //String => String.ToUpper()
+            var lambdaExpression = Expression.Lambda(body, prm);
+
+
+            //We create a lambda based on the body and the param , which a description (expression) of function not yet a function, and it need to be compiled first
+            //String => String.ToUpper()
+            var stronglyTypedLambdaExpr = Expression.Lambda<Func<string, string>>(body, prm); //Selector = lambda
+
+            //not strongly typed: lack some kind of protection
+            //Multiple args since it doesn't know the type
+            //var lambda = lambdaExpression.Compile().DynamicInvoke(/*params object[]*/args: "john");
+            var lambdaCompiled = lambdaExpression.Compile();
+            var notStronglyTyped = lambdaCompiled.DynamicInvoke(/*params object[]*/args: "john");
+
+            var stronglyTypedLambdaCompiled = stronglyTypedLambdaExpr.Compile();
+            //One argument!
+            var stronglyTyped = stronglyTypedLambdaCompiled.Invoke(arg: "john");
+
+            //output: String => String.ToUpper()
+            Console.WriteLine(lambdaExpression);
+
+            //output: String => String.ToUpper()
+            Console.WriteLine(stronglyTypedLambdaExpr);
+
+            //After compilation of lambda's expression : 
+            //output: System.Func`2[System.String,System.String]
+            Console.WriteLine(lambdaCompiled);
+            //output: System.Func`2[System.String, System.String]
+            Console.WriteLine(stronglyTypedLambdaCompiled);
+
+            //output: JOHN
+            Console.WriteLine(notStronglyTyped);
+            //output: JOHN
+            Console.WriteLine(stronglyTyped);
+
+
+            //This operates with a function
+            //IEnumerable<T>.Where<T>(Func<T,Boolean> predicate)
+
+            //This operates an expression (description of what a function does), can be interpreted by a library at runtime 
+            //IQueryable<T>.Where<T>(Expression<Func<T,Boolean>> predicate)
+
+            //This IQueryable : the result not triggered against the DB, interpreted by a library at runtime 
+            //var products = db.Products
+            //	.Where(p=> p.Name == "eggs") //<- BinaryExpression
+            //	.OrderByDescending(p=>p.Price);
+
+
+            //BinaryExpression:
+            //Left : expression
+            //Right : expression
+            //NodeType : Equal, NotEqual, etc...
+
+            //ExpressionVisitor read each piece of the expression and operates on it on the different way, its goal is to translate this linked query into SQL
+            //ExpressionVisitor used to read and operate on expressions ... or even modify them... kind of
+            //p.Name == "eggs"
+            //Part of function 			SQL
+            //p.Name					Name
+            //==						=
+            //"eggs"					'eggs'	
+
+            Expression<Func<string, string>> kejString = s => s + " belongs to john";
+
+            var toUpperVisitor = new ToUpperVisitor();
+
+            //s => (s + " belongs to john").ToUpper()
+            var expressed = toUpperVisitor.VisitAndConvert(kejString, callerName: null);
+
+            //output : CHEESE BELONGS TO john
+            Console.WriteLine(expressed.Compile().Invoke(arg: "cheese"));
+
+
+            //Example : convert string to a DateTime then back to a specific string format
+            var stringParam = Expression.Parameter(typeof(string), name: "x");
+
+            // calls static method "DateTime.Parse" since it is used through a reflexion
+            var dateTimeParse = Expression.Call(typeof(DateTime), methodName: nameof(DateTime.Parse), typeArguments: null /* new Type[] { typeof(DateTime) }*/, arguments: stringParam);
+            var format = Expression.Constant("MM/dd/yyyy");
+
+            //calls instance method "DateTime.ToString(string)"  since it is used through a reflexion
+            var bodyExpression = Expression.Call(dateTimeParse, methodName: nameof(DateTime.ToString), typeArguments: null, arguments: format);
+
+
+            //x => Parse(x).ToString("MM/dd/yyyy")
+            var lambdaExpr = Expression.Lambda<Func<string, string>>(bodyExpression, stringParam);
+
+            //We need to compile it because it is not a func/lambda yet, it just a description of func/lambda, once compiled get cached.
+            var lambdaExprCompiled = lambdaExpr.Compile();
+
+            var x = "2016/08/30";
+
+
+            //We need to compile it because it is not a func/lambda yet, it just a description of func/lambda, once compiled get cached.
+            //output : x => Parse(x).ToString("MM/dd/yyyy") :(argument) x = (2016/08/30): result = 08/30/2016
+            Console.WriteLine($"{lambdaExpr} :(argument) {nameof(x)} = ({x}): result = {lambdaExpr.Compile()(arg: x)}");
+
+
+            //output: System.Func`2[System.String,System.String] :(argument) x = (2016/08/30): result = 08/30/2016
+            Console.WriteLine($"{lambdaExprCompiled} :(argument) {nameof(x)} = ({x}): result = {lambdaExprCompiled(arg: x)}");
+        }
 
 
         //https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/concepts/expression-trees/how-to-use-expression-trees-to-build-dynamic-queries
@@ -239,6 +380,7 @@ namespace ExpressionTree
             var wherePredicate = Expression.Lambda<Func<string, bool>>(conditions, parameters: new ParameterExpression[] { companyParam });
 
             //System.String[].Where(company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16)))
+            //We use call to use an expression that use reflexion
             MethodCallExpression whereCallExpression = Expression.Call(
                type: typeof(Queryable),
                 methodName: "Where",
@@ -306,6 +448,7 @@ namespace ExpressionTree
                 return Visit(expression);
             }
 
+            //protected override Expression VisitBinary([NotNull] BinaryExpression node)
             protected override Expression VisitBinary(BinaryExpression node)
             {
                 if (node.NodeType == ExpressionType.AndAlso)
@@ -377,6 +520,8 @@ namespace ExpressionTree
 
             //2- function description
             //Homoiconicity : the syntax that we use to declare a method can be used to describe a method
+            // (x, y) are parameters of the expression
+            // x + y is the body of the expression
             Expression<Func<int, int, int>> addTwoNumbersExpression = (x, y) => x + y;
             //output: (x, y) => (x + y)
             Console.WriteLine(addTwoNumbersExpression);
@@ -441,4 +586,6 @@ namespace ExpressionTree
                 param.Name, left.Name, operation.NodeType, right.Value);
         }
     }
+
+
 }
