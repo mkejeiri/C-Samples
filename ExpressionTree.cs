@@ -10,59 +10,81 @@ namespace ExpressionTree
     {
         public static IEnumerable<T> WhereRules<T>(this IEnumerable<T> source, IEnumerable<RulesEngineImplementation.Rule> rules)
         {
-            var parameter = Expression.Parameter(typeof(T));
+            //T = "Employee" FullName = "Employee"
+
+            //with the next parameter we will get default Param_0
+            //var parameter = Expression.Parameter(typeof(T));
+
+            //we got Employee thanks to "name: typeof(T).Name" instead default Param_0 which is applied on Employee object
+            var parameter = Expression.Parameter(typeof(T), name: typeof(T).Name);
             BinaryExpression binaryExpression = null;
 
             //Create an expression :  (Name == gary) AndAlso (HireDate > #2016/01/01#)
             foreach (var rule in rules)
             {
-                //e.g. Name or HireDate
+                //e.g. Extract Name or HireDate property from Employee Object
+                //Param_0.Name or Param_0.HireDate
+                //Employee.Name or Employee.HireDate
                 var prop = Expression.Property(parameter, rule.PropertyName);
-                //e.g. gary or #2016/01/01#
+
+                //e.g. Extract  constant of either gary or #2016/01/01#
                 var value = Expression.Constant(rule.Value);
+
                 //(Name == gary) or  (HireDate > #2016/01/01#)
-                //rule.Operation : '=' or '>'
+                //rule.Operation : '=' or '>' : (Param_0.Name == "gary") or (Param_0.HireDate > 1/1/2016 12:00:00 AM)
+                //rule.Operation : '=' or '>' : (Employee.Name == "gary") or (Employee.HireDate > 1/1/2016 12:00:00 AM)
                 var newBinary = Expression.MakeBinary(rule.Operation, left: prop, right: value);
 
                 binaryExpression =
                     binaryExpression == null
-                        //(Name == gary) or  (HireDate > #2016/01/01#)
-                        ? newBinary 
-                        // add (Name == gary) to (HireDate > #2016/01/01#) or  (HireDate > #2016/01/01#) to (Name == gary) 
+                        //(Employee.Name == gary) or  (Employee.HireDate > #2016/01/01#)
+                        ? newBinary
+                        // add (Employee.Name == gary) to (Employee.HireDate > #2016/01/01#) or  (Employee.HireDate > #2016/01/01#) to (Employee.Name == gary) 
                         : Expression.MakeBinary(ExpressionType.AndAlso, left: binaryExpression, right: newBinary);
             }
 
             //Compile the expression and cache it
             // (Name == gary) AndAlso (HireDate > #2016/01/01#)
-            var cookedExpression = Expression.Lambda<Func<T, bool>>(binaryExpression, parameter).Compile();
+            //using default parameter definition - default Param_0, pre-compiled : Param_0 => ((Param_0.Name == "gary") AndAlso (Param_0.HireDate > 1/1/2016 12:00:00 AM))
+            // pre-compiled : Employee => ((Employee.Name == "gary") AndAlso (Employee.HireDate > 1/1/2016 12:00:00 AM))
+            var appliedExpression = Expression.Lambda<Func<T, bool>>(binaryExpression, parameter);
 
-            //Apply the expression (Name == gary) AndAlso (HireDate > #2016/01/01#)
-            return source.Where(cookedExpression);
+            //post-compiled appliedExpression
+            var appliedExpressionCompiled = appliedExpression.Compile();
+
+            // default Param_0 : Apply the expression (Param_0.Name == gary) AndAlso (Param_0.HireDate > #2016/01/01#)
+            //Apply the expression (Employee.Name == gary) AndAlso (Employee.HireDate > #2016/01/01#)
+            return source.Where(appliedExpressionCompiled);
         }
 
-        public static IQueryable<T> OrderByPropertyOrField<T>(this IQueryable<T> queryable, string propertyOrFieldName, bool ascending = true)
+        public static IQueryable<T> OrderByPropertyOrField<T>(this IQueryable<T> queryableData, string propertyOrFieldName, bool ascending = true)
         {
-            //Name = "Employee" FullName = "Employee"}
+            //T = "Employee" FullName = "Employee"
             var elementType = typeof(T);
             var orderByMethodName = ascending ? "OrderBy" : "OrderByDescending";
 
-            //Param_0
-            var parameterExpression = Expression.Parameter(elementType);
+            //Param_0 is applied on Employee object
+            //with the next parameter we will get default Param_0
+            //var parameterExpression = Expression.Parameter(elementType);
 
-            //Param_0.Name
+            //we got Employee thanks to "name: elementType.Name" instead default Param_0 which is applied on Employee object
+            var parameterExpression = Expression.Parameter(elementType, name: elementType.Name);
+
+            //Param_0.Name or Employee.Name is we forced the naming into Employee
             var propertyOrFieldExpression = Expression.PropertyOrField(parameterExpression, propertyOrFieldName);
 
-            ////Param_0 => Param_0.Name
+            //Param_0 => Param_0.Name or Employee => Employee.Name
             var selector = Expression.Lambda(propertyOrFieldExpression, parameterExpression);
 
-            //Employee[].OrderBy(Param_0 => Param_0.Name)
+            //Employee[].OrderBy(Param_0 => Param_0.Name) OR Employee[].OrderBy(Employee => Employee.Name)
             var orderByExpression = Expression.Call(
                 type: typeof(Queryable),
                 methodName: orderByMethodName,
                 typeArguments: new[] { elementType, propertyOrFieldExpression.Type },
-                /*params arguments:*/queryable.Expression, selector);
+                /*params arguments:*/queryableData.Expression, selector);
 
-            return queryable.Provider.CreateQuery<T>(orderByExpression);
+            //Create an executable query from the expression tree.
+            return queryableData.Provider.CreateQuery<T>(orderByExpression);
         }
     }
 
@@ -153,10 +175,10 @@ namespace ExpressionTree
 
         static void Main(string[] args)
         {
-            SimpleExpressions();
-            Factorial();
-            ChangeAndAlsoToOrElse();
-            RulesEngineImplementation.Run();
+            //SimpleExpressions();
+            //Factorial();
+            //ChangeAndAlsoToOrElse();
+            //RulesEngineImplementation.Run();
             BuildDynamicQueries();
 
         }
@@ -180,27 +202,28 @@ namespace ExpressionTree
             // The IQueryable data to query.  
             IQueryable<String> queryableData = companies.AsQueryable<string>();
 
-            // Compose the expression tree that represents the parameter to the predicate.  
-            ParameterExpression companyParam = Expression.Parameter(typeof(string), name: "company");
+            //Compose the expression tree that represents the parameter to the predicate.  
+            //Instead of default Param_0 we force it next to Company (name: "Company")
+            ParameterExpression companyParam = Expression.Parameter(typeof(string), name: "Company");
 
             // ***** Where(company => (company.ToLower() == "coho winery" || company.Length > 16)) *****  
             // Create an expression tree that represents the expression 'company.ToLower() == "coho winery"'.  
             //company.ToLower()
             Expression companyToLower = Expression.Call(companyParam, typeof(string).GetMethod(name: "ToLower", System.Type.EmptyTypes));
-            
+
             //"coho winery"}
             Expression companyConstant = Expression.Constant("coho winery");
-            
+
             //(company.ToLower() == "coho winery")
             Expression companyToLowerEqualConstantCompanyName = Expression.Equal(left: companyToLower, right: companyConstant);
 
             // Create an expression tree that represents the expression 'company.Length > 16'.  
             //company.Length
             Expression companyLength = Expression.Property(companyParam, typeof(string).GetProperty(name: "Length"));
-            
+
             //16
             Expression constantLength = Expression.Constant(value: 16, typeof(int));
-            
+
             //(company.Length > 16)
             Expression companyLengthGreaterThanConstantLength = Expression.GreaterThan(left: companyLength, right: constantLength);
 
@@ -214,7 +237,7 @@ namespace ExpressionTree
             // 'queryableData.Where(company => (company.ToLower() == "coho winery" || company.Length > 16))'  
             //company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16))
             var wherePredicate = Expression.Lambda<Func<string, bool>>(conditions, parameters: new ParameterExpression[] { companyParam });
-            
+
             //System.String[].Where(company => ((company.ToLower() == "coho winery") OrElse (company.Length > 16)))
             MethodCallExpression whereCallExpression = Expression.Call(
                type: typeof(Queryable),
@@ -226,7 +249,7 @@ namespace ExpressionTree
             // ***** OrderBy(company => company) *****  
             // Create an expression tree that represents the expression  
             // 'whereCallExpression.OrderBy(company => company)'
-            
+
             //company => company
             var orderByPredicate = Expression.Lambda<Func<string, string>>(companyParam, new ParameterExpression[] { companyParam });
 
@@ -277,21 +300,25 @@ namespace ExpressionTree
         {
             public Expression Modify(Expression expression)
             {
+                //Each this.Visit(expression) 'call', calls VisitBinary Method if the expression is binary 
+                //name.StartsWith("G") is not a binary expression
+                //(name.Length > 10)  is binary expression!
                 return Visit(expression);
             }
 
-            protected override Expression VisitBinary(BinaryExpression b)
+            protected override Expression VisitBinary(BinaryExpression node)
             {
-                if (b.NodeType == ExpressionType.AndAlso)
+                if (node.NodeType == ExpressionType.AndAlso)
                 {
-                    Expression left = this.Visit(b.Left);
-                    Expression right = this.Visit(b.Right);
+                    // node: name => ((name.Length > 10) && name.StartsWith("G"))
+                    Expression left = this.Visit(node.Left);
+                    Expression right = this.Visit(node.Right);
 
                     // Make this binary expression an OrElse operation instead of an AndAlso operation.  
-                    return Expression.MakeBinary(binaryType: ExpressionType.OrElse, left: left, right: right, liftToNull: b.IsLiftedToNull, method: b.Method);
+                    return Expression.MakeBinary(binaryType: ExpressionType.OrElse, left: left, right: right, liftToNull: node.IsLiftedToNull, method: node.Method);
                 }
 
-                return base.VisitBinary(b);
+                return base.VisitBinary(node);
             }
         }
 
@@ -319,8 +346,7 @@ namespace ExpressionTree
                         // Condition: value > 1  
                         test: Expression.GreaterThan(left: value, right: Expression.Constant(1)),
                         // If true: result *= value --  
-                        ifTrue: Expression.MultiplyAssign(left: result,
-                            right: Expression.PostDecrementAssign(value)),
+                        ifTrue: Expression.MultiplyAssign(left: result, right: Expression.PostDecrementAssign(value)),
                         // If false, exit the loop and go to the label.  
                         ifFalse: Expression.Break(label, result)
                     ),
