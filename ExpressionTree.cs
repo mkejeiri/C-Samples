@@ -1,6 +1,6 @@
 //https://dotnetfiddle.net/C55ERn
 /********************************************************************************************************************
-       Expression vs reflexion
+       Expression vs reflexion : http://www.codewrecks.com/blog/index.php/2008/10/04/expression-tree-vs-reflection/
        Expression are a nice abstraction over reflexion, reflexion is powerful tool emit the IL to run and create methods, 
        reflexion are slow in comparison to Expression, Expression speeds that up, uses reflexion to cache a delegate, 
        compile it and then save it into memory and then reuse it, expression are virtually as fast as methods 
