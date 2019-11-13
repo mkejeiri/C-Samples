@@ -1,12 +1,20 @@
 namespace ServiceLocatorBuilder
 {
+
+    public interface IRemoteService { }
+    public class RemoteService : IRemoteService
+    {
+        //Code here
+        //..		 
+    }
+
     public class ServiceProviderBuilder
     {
         public static IServiceContainer Build()
         {
             var provider = new ServiceContainer();
 
-            provider.Register<ILifeInsuranceService>(() => new LifeInsuranceService());               
+            provider.Register<IRemoteService>(() => new RemoteService());
             provider.Register<IConfigProvider>(() => new ConfigProvider());
             provider.Register<ILoggerFactory>(() => new NLogLoggerFactory());
             return provider;
@@ -15,7 +23,7 @@ namespace ServiceLocatorBuilder
 }
 
 namespace ServiceLocator
-{   
+{
     public interface IServiceContainer
     {
         T Get<T>();
@@ -24,12 +32,12 @@ namespace ServiceLocator
 
     public class ServiceContainer : IServiceContainer
     {
-        private ConcurrentDictionary<Type,Func<object>> factories = new ConcurrentDictionary<Type, Func<object>>();
+        private ConcurrentDictionary<Type, Func<object>> factories = new ConcurrentDictionary<Type, Func<object>>();
         public void Register<T>(Func<T> functionFactory)
         {
             if (!factories.TryAdd(typeof(T), () => functionFactory()))
             {
-                throw new InvalidOperationException("Cannot add service for "+ typeof(T).FullName);
+                throw new InvalidOperationException("Cannot add service for " + typeof(T).FullName);
             }
         }
         public T Get<T>()
@@ -43,7 +51,7 @@ namespace ServiceLocator
             return (T)factory.Invoke();
         }
 
-        public T SafeGet<T>() where T:class
+        public T SafeGet<T>() where T : class
         {
             Func<object> factory;
             if (!factories.TryGetValue(typeof(T), out factory))
@@ -55,8 +63,8 @@ namespace ServiceLocator
         }
     }
 
-  
-public static class ServiceContainerInstance
+
+    public static class ServiceContainerInstance
     {
         private static readonly object Padlock = new object();
         private static IServiceContainer _instance = new ServiceContainer();
@@ -66,7 +74,7 @@ public static class ServiceContainerInstance
             return _instance.Get<T>();
         }
 
-        public static T SafeGet<T>() where T:class
+        public static T SafeGet<T>() where T : class
         {
             return _instance.SafeGet<T>();
         }
@@ -90,5 +98,5 @@ static App() => ServiceContainerInstance.InitializeIfNotYetSet(ServiceProviderBu
 //Used inside Program
 {
 //Retrieve an instance through 	
-var lifeInsuranceService = ServiceContainerInstance.Get<ILifeInsuranceService>();
+var RemoteService = ServiceContainerInstance.Get<IRemoteService>();
 }
