@@ -46,4 +46,32 @@ namespace SingletonPattern
             }             
         }    
     }
+    
+    
+    public class Mapper
+    {
+        private static readonly object SyncLock = new object();
+        private static IMapper _instance;
+        private Mapper() { }
+
+        public static IMapper GetInstance
+        {
+            get
+            {
+                if (_instance != null)
+                {
+                    return _instance;
+                }
+                lock (SyncLock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new MapperConfiguration(cfg => cfg.AddProfiles(Assembly.GetExecutingAssembly())).CreateMapper();
+                        return _instance;
+                    }
+                    return _instance;
+                }
+            }
+        }
+    }
 }
