@@ -27,7 +27,7 @@ namespace MeterReaderWeb.Data
         .HasData(new Customer()
         {
           Id = 1,
-          Name = "Shawn Wildermuth",
+          Name = "John Doe",
           PhoneNumber = "555-1212",
           AddressId = 1
         },

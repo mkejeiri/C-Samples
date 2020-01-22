@@ -100,7 +100,7 @@ namespace MeterReaderWeb.Migrations
                         {
                             Id = 1,
                             AddressId = 1,
-                            Name = "Shawn Wildermuth",
+                            Name = "John Doe",
                             PhoneNumber = "555-1212"
                         },
                         new

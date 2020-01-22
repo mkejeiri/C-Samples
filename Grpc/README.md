@@ -1,5 +1,5 @@
 # MeterReader
- An example app for my Pluralsight course.
+ An example app for GRPC.
 
  ## Building the Example
 
@@ -39,6 +39,5 @@ You could also watch changes to the Vue project by calling:
 C:/>npm run watch
 ```
 
-Though for the Pluralsight course, you won't need to update the Vue project at all.
 
 

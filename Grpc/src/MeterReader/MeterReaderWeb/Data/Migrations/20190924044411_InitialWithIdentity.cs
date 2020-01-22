@@ -221,7 +221,7 @@ namespace MeterReaderWeb.Migrations
             migrationBuilder.InsertData(
                 table: "Customers",
                 columns: new[] { "Id", "AddressId", "CompanyName", "Name", "PhoneNumber" },
-                values: new object[] { 1, 1, null, "Shawn Wildermuth", "555-1212" });
+                values: new object[] { 1, 1, null, "John Doe", "555-1212" });
 
             migrationBuilder.InsertData(
                 table: "Customers",
